@@ -32,7 +32,7 @@ using Interpolations
 using Printf
 
 cpu  = ComputationalResources.CPU1()
-#using MRSTAT.BlochSimulators
+using BlochSimulators
 #using MRSTAT
 # using UMCUtils
 using Colors
@@ -40,9 +40,11 @@ using Statistics
 
 include("BLAKJac/src/recon_options.jl")
 include("BLAKJac/src/RF_Shapes.jl")
-include("BLAKJac/src/tissueparameters.jl")
-include("BLAKJac/src/fisp3d.jl")
+#include("BLAKJac/src/tissueparameters.jl")
+#include("BLAKJac/src/fisp3d.jl")
 include("BLAKJac/src/BLAKJac.jl")
 #include("../numerical_phantom/k_shapes.jl")
 #if (!@isdefined(gelphantoms)) include("gelphantoms.jl") end
 #if (!@isdefined(tissues)) include("tissues.jl") end
+
+using .BLAKJac 

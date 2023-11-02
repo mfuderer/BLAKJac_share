@@ -76,68 +76,6 @@ end
 #
 # as well as T₁T₂xy, T₁T₂xyz, T₁T₂ρˣρʸxy and T₁T₂ρˣρʸxyz.
 
-for P in subtypes(AbstractTissueParameters)
-
-    # Create new struct name by appending new fieldnames to name of struct
-    structname_xy = Symbol(fieldnames(P)...,:xy)
-    structname_xyz = Symbol(fieldnames(P)...,:xyz)
-    structname_ρˣρʸ = Symbol(fieldnames(P)...,:ρˣρʸ)
-    structname_ρˣρʸxy = Symbol(fieldnames(P)...,:ρˣρʸxy)
-    structname_ρˣρʸxyz = Symbol(fieldnames(P)...,:ρˣρʸxyz)
-
-    # Create new tuples of fieldnames
-    fnames_xy = (fieldnames(P)...,:x,:y)
-    fnames_xyz = (fieldnames(P)...,:x,:y,:z)
-    fnames_ρˣρʸ = (fieldnames(P)...,:ρˣ,:ρʸ)
-    fnames_ρˣρʸxy = (fieldnames(P)...,:ρˣ,:ρʸ,:x,:y)
-    fnames_ρˣρʸxyz = (fieldnames(P)...,:ρˣ,:ρʸ,:x,:y,:z)
-
-    fnames_typed_xy = [:($(fn)::T) for fn ∈ fnames_xy]
-    fnames_typed_xyz = [:($(fn)::T) for fn ∈ fnames_xyz]
-    fnames_typed_ρˣρʸ = [:($(fn)::T) for fn ∈ fnames_ρˣρʸ]
-    fnames_typed_ρˣρʸxy = [:($(fn)::T) for fn ∈ fnames_ρˣρʸxy]
-    fnames_typed_ρˣρʸxyz = [:($(fn)::T) for fn ∈ fnames_ρˣρʸxyz]
-
-    N = length(fieldnames(P))
-
-    @eval begin
-
-        """
-            $($(structname_xy)){T} <: AbstractTissueParameters{$($(N+2)),T}
-        """
-        struct $(structname_xy){T} <: AbstractTissueParameters{$(N+2),T}
-            $(fnames_typed_xy...)
-        end
-
-        """
-            $($(structname_xyz)){T} <: AbstractTissueParameters{$($(N+3)),T}
-        """
-        struct $(structname_xyz){T} <: AbstractTissueParameters{$(N+3),T}
-            $(fnames_typed_xyz...)
-        end
-
-        """
-            $($(structname_ρˣρʸ)){T} <: AbstractTissueParameters{$($(N+2)),T}
-        """
-        struct $(structname_ρˣρʸ){T} <: AbstractTissueParameters{$(N+2),T}
-            $(fnames_typed_ρˣρʸ...)
-        end
-
-        """
-            $($(structname_ρˣρʸxy)){T} <: AbstractTissueParameters{$($(N+4)),T}
-        """
-        struct $(structname_ρˣρʸxy){T} <: AbstractTissueParameters{$(N+4),T}
-            $(fnames_typed_ρˣρʸxy...)
-        end
-
-        """
-            $($(structname_ρˣρʸxyz)){T} <: AbstractTissueParameters{$($(N+5)),T}
-        """
-        struct $(structname_ρˣρʸxyz){T} <: AbstractTissueParameters{$(N+5),T}
-            $(fnames_typed_ρˣρʸxyz...)
-        end
-    end
-end
 
 # The following is needed to make sure that operations with/on subtypes of AbstractTissueParameters return the appropriate type, see the FieldVector example from StaticArrays documentation
 for S in subtypes(AbstractTissueParameters)

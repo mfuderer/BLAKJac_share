@@ -24,7 +24,10 @@ in this hyper steady state.
 - 'wait_spoiling::Bool': default=false; spoiling is assumed during wait time 
 """
 # Create struct that holds parameters necessary for performing FISP simulations based on the EPG model
-struct FISP3D{T<:AbstractFloat, Ns, U<:AbstractVector{Complex{T}}} 
+abstract type BlochSimulator{T} end
+abstract type EPGSimulator{T,Ns} <: BlochSimulator{T} end
+
+struct FISP3D{T<:AbstractFloat, Ns, U<:AbstractVector{Complex{T}}} <: EPGSimulator{T,Ns}
     RF_train::U # flipangles in degrees, no phase
     TR::T # repetition time in seconds
     TE::T # echo time in seconds
@@ -35,13 +38,15 @@ struct FISP3D{T<:AbstractFloat, Ns, U<:AbstractVector{Complex{T}}}
     inversion_prepulse::Bool    # with or without inversion
     wait_spoiling::Bool    # spoiling is assumed during waiting time 
 end
+
+
 # provide default value of wait_spoiling for backward compatibility
 FISP3D(RF_train,TR,TE,max_state,TI,TW,repetitions,inversion_prepulse) = 
                     FISP3D(RF_train,TR,TE,max_state,TI,TW,repetitions,inversion_prepulse,false)
 
 # To be able to change precision and send to CUDA device
-# @functor FISP3D
-# @adapt_structure FISP3D
+@functor FISP3D
+@adapt_structure FISP3D
 
 # Methods needed to allocate an output array of the correct size and type
 output_dimensions(sequence::FISP3D) = length(sequence.RF_train)

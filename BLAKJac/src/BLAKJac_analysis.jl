@@ -88,7 +88,7 @@ function BLAKJac_analysis!(resource::CPU1, RFdeg::Vector{ComplexF64}, trajectory
     wait_spoiling = (TW > 0.001) # according to the logic that spoiling is necessary except for zero TW
 
     # spgr = BlochSimulators.FISP(RFdegExtended, sliceprofile,TR,TE,Val(maxstate),TI)
-    spgr = FISP3D(RFdeg, TR,TE,Val(maxstate),TI, TW, repetitions, inversion, wait_spoiling)
+    spgr = BlochSimulators.FISP3D(RFdeg, TR,TE,Val(maxstate),TI, TW, repetitions, inversion, wait_spoiling)
 
     # Initialize accumulators to calculate averaged result over the T1T2set 
     b1factors2All =zeros(nPars)
@@ -142,37 +142,29 @@ function BLAKJacOnSingleT1T2(resource::CPU1, T1test, T2test, B1test, nNuisances,
     note = @sprintf("for (T1,T2)=(%6.1f,%6.1f)", 1000*T1test, 1000*T2test)
 
     parameters     = (nNuisances>0) ? [BlochSimulators.T₁T₂B₁(T1test,T2test,B1test)] : [BlochSimulators.T₁T₂(T1test,T2test)];
-    fit_parameters = (nNuisances>0) ? ∂mˣʸ∂T₁T₂B₁ : ∂mˣʸ∂T₁T₂
 
     # Now an inelegant if-then-else approach follows,
     # prompted by not fully understanding the struct that is returned by simulate_derivatives() ...
     wlocal = zeros(ComplexF64,nTR, nPars+nNuisances)
 
-    if (useSurrogate)
-        surrogate = BlochSimulators.PolynomialSurrogate(spgr, options)
-        derivs = simulate_derivatives(resource,surrogate,parameters,fit_parameters)
-        if cyclic
-            derivs = derivs[nTR+1:2*nTR]
-        end
-        wlocal[:,1] = derivs.m
-        wlocal[:,2] = derivs.∂T₁
-        wlocal[:,3] = derivs.∂T₂
-    else
-        m = simulate_echos(resource, spgr, parameters)
-        mdm = simulate_derivatives(m, resource,spgr,parameters,fit_parameters)
-        echos = [m for (m,∂m) in mdm]
-        derivs = [∂m for (m,∂m) in mdm] |> StructArray
-        if cyclic
-            echos  = echos[nTR+1:2*nTR]
-            derivs = derivs[nTR+1:2*nTR]
-        end
-        wlocal[:,1] = echos
-        wlocal[:,2] = derivs.∂T₁ .* T1test
-        wlocal[:,3] = derivs.∂T₂ .* T2test
-        if nNuisances>0
-            wlocal[:,4] = derivs.∂B₁ 
-        end       
+    @assert(!useSurrogate, "abandoned feature")
+
+    m = simulate_echos(resource, spgr, parameters)
+    ∂m∂T₁, ∂m∂T₂, ∂m∂B₁ = simulate_derivatives(m, resource,spgr,parameters)
+    echos = m
+    #derivs = [∂m for (m,∂m) in mdm] |> StructArray
+    if cyclic
+        echos  = echos[nTR+1:2*nTR]
+        ∂m∂T₁  = ∂m∂T₁[nTR+1:2*nTR]
+        ∂m∂T₂  = ∂m∂T₂[nTR+1:2*nTR]
+        ∂m∂B₁  = ∂m∂B₁[nTR+1:2*nTR]
     end
+    wlocal[:,1] = echos
+    wlocal[:,2] = ∂m∂T₁ .* T1test
+    wlocal[:,3] = ∂m∂T₂ .* T2test
+    if nNuisances>0
+        wlocal[:,4] = ∂m∂B₁ 
+    end       
 
     if any(i -> i=="weights", options["plottypes"]) # if "weights" in keys(options["plottypes"])
         kz = [(s)[1].kz for s in trajectorySet]

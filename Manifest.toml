@@ -2,7 +2,7 @@
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "ae212c346d5b9beefb3970307a02ea021310c06b"
+project_hash = "9098d8f06a8f7a33ccd2343b4dfe7ea7b0d25633"
 
 [[deps.AbstractFFTs]]
 deps = ["LinearAlgebra"]
@@ -74,6 +74,12 @@ version = "0.4.2"
 
 [[deps.Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[deps.BlochSimulators]]
+deps = ["Adapt", "CUDA", "ComputationalResources", "Distributed", "DistributedArrays", "Functors", "InteractiveUtils", "LinearAlgebra", "OffsetArrays", "StaticArrays", "StructArrays", "Unitful", "Unitless"]
+git-tree-sha1 = "585932dfb64668de47fbb792be86220ee83a4964"
+uuid = "2c9a3a5d-4a8d-4ca7-a6c9-04a38836deab"
+version = "0.2.3"
 
 [[deps.CEnum]]
 git-tree-sha1 = "eb4cb44a499229b3b8426dcfb5dd85333951ff90"
@@ -309,15 +315,21 @@ weakdeps = ["StaticArrays"]
     [deps.ForwardDiff.extensions]
     ForwardDiffStaticArraysExt = "StaticArrays"
 
+[[deps.Functors]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "9a68d75d466ccc1218d0552a8e1631151c569545"
+uuid = "d9f16b24-f501-4c13-a1f2-28368ffc5196"
+version = "0.4.5"
+
 [[deps.Future]]
 deps = ["Random"]
 uuid = "9fa8497b-333b-5362-9e8d-4d0656e87820"
 
 [[deps.GPUArrays]]
 deps = ["Adapt", "GPUArraysCore", "LLVM", "LinearAlgebra", "Printf", "Random", "Reexport", "Serialization", "Statistics"]
-git-tree-sha1 = "8ad8f375ae365aa1eb2f42e2565a40b55a4b69a8"
+git-tree-sha1 = "85d7fb51afb3def5dcb85ad31c3707795c8bccc1"
 uuid = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
-version = "9.0.0"
+version = "9.1.0"
 
 [[deps.GPUArraysCore]]
 deps = ["Adapt"]
@@ -847,6 +859,30 @@ version = "1.0.2"
 
 [[deps.Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+
+[[deps.Unitful]]
+deps = ["Dates", "LinearAlgebra", "Random"]
+git-tree-sha1 = "a72d22c7e13fe2de562feda8645aa134712a87ee"
+uuid = "1986cc42-f94f-5a68-af5c-568840ba703d"
+version = "1.17.0"
+
+    [deps.Unitful.extensions]
+    ConstructionBaseUnitfulExt = "ConstructionBase"
+    InverseFunctionsUnitfulExt = "InverseFunctions"
+
+    [deps.Unitful.weakdeps]
+    ConstructionBase = "187b0558-2788-49d3-abe0-74a17ed4e7c9"
+    InverseFunctions = "3587e190-3f89-42d0-90ee-14403ec27112"
+
+[[deps.Unitless]]
+deps = ["Requires"]
+git-tree-sha1 = "136c5e089e95e9a6405166fb52039cd2cda1c775"
+uuid = "c904d999-9673-4878-a3dd-e3ef1851788a"
+version = "2.1.1"
+weakdeps = ["Unitful"]
+
+    [deps.Unitless.extensions]
+    UnitlessUnitfulExt = "Unitful"
 
 [[deps.UnsafeAtomics]]
 git-tree-sha1 = "6331ac3440856ea1988316b46045303bef658278"
