@@ -160,6 +160,7 @@ end;
 
 ## Elements of Figure 3
 using Statistics
+using PyPlot
 PyPlot.rc("font", family="serif")
 
 mapnames = ["std(T1)", "std(T2)", "rho"];
