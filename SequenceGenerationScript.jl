@@ -12,16 +12,16 @@ trajectorySet = BLAKJac.TrajectorySet(ky,kz)
 BLAKJac.BLAKJac_defaults!(trajectorySet, recon_options)
 dataFolder = "/home/mfuderer/Documents/Julia/Capture"
 
-manual_run = 7  # to be increased manually from 1 to 8
+manual_run = 8  # to be increased manually from 1 to 8
 # (phase, startstate, cyclic, RMSflip, nametag)
 tasklist = [(true, 1, false, 40, "anh"),
             (true, 1, true,  40, "aph"),
             (true,-1, false, 40, "aih"),
-            (true, 1, false, 20, "anl"),
+            (true, 1, false, 10, "anl"),
             (false,1, false, 40, "nnh"),
             (false,1, true,  40, "nph"),
             (false,-1,false, 40, "nih"),
-            (false,1, false, 20, "nnl")]
+            (false,1, false, 10, "nnl")]
 (slow_phase,start_state,cyclic,RMSflip,nametag) = tasklist[manual_run]
 
 recon_options["opt_slow_phase"] = slow_phase
@@ -59,14 +59,14 @@ end
 
 scores=zeros(nRealizations,2)
 saved_H = Dict()
-recon_options["rfName"]  = "from_file"
-recon_options["rfFunction"] = rfDictionary[recon_options["rfName"]]
-rfFunction = recon_options["rfFunction"]
+
 (fig,ax)=(subplots(Int(ceil(nRealizations/3)),3,figsize=(9,3)))
 for i in 1:nRealizations
     fn = "$fn_base($i)"
-    recon_options["rfFile"]  = fn
-    RFdeg = rfFunction(recon_options["nTR"], recon_options["nky"])
+    fPath = dataFolder*"/"*fn*".jld2"
+    vars = FileIO.load(fPath)
+    RFdeg = vars["RFdeg"]
+    RFdeg = vec(complex.(RFdeg))
     ax[i].plot(abs.(RFdeg))
     anglesdd = zeros(length(RFdeg))
     for i in 1:length(RFdeg)-2

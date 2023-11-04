@@ -300,18 +300,6 @@ function RF_from_optim7pt_edited(nTR, ny) # manual editing to remove inserted si
     itp = interpolate(RFshort,BSpline(Cubic(Natural(OnGrid()))))
     RFdegR = itp.(LinRange(1,length(RFshort),nTR))
     RFdegRcrop = [((v>180) ? v-360 : v) for v in RFdegR]
-
-    #RFdegRcrop[189:200] .= 13.0      # temporary dive into negatives removed
-    #RFdegRcrop[317:320] .= 105.0     # remove two 180 pulses + surrounding
-    #RFdegRcrop[331:332] .= 80.0      # remove two 180 pulses
-    #RFdegRcrop[346:349] .= 50.0      # remove three 180 pulses
-    #RFdegRcrop[443:448] .= 30.0      # temporary dive into negatives removed
-    #RFdegRcrop[524:529] .= 8.0      # temporary dive into negatives removed
-    #RFdegRcrop[693:716] .= 109.0      # jitter on a bulge removed
-    #RFdegRcrop[671:719] .= 70.0      # alternatively, the whole bulge removed
-    #RFdegRcrop[1:10] .= 0.0             # for reference, remove 10 TRs
-    #RFdegRcrop[332:332] .= 80.0         # of a doublet, remove one
-
     RF_train = vec(complex.(RFdegRcrop))
     return RF_train
 end
